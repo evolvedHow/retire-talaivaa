@@ -55,7 +55,21 @@ export function runMC(): void {
   };
 
   worker.onerror = (e) => {
-    mcRunningStore.set({ running: false, pct: 0, error: e.message ?? 'Worker error' });
+    // Surface as much detail as possible — bare ErrorEvents (worker script
+    // load failures, parse errors) often have empty .message.
+    const parts: string[] = [];
+    if (e.message) parts.push(e.message);
+    if (e.filename) parts.push(`@ ${e.filename}${e.lineno ? ':' + e.lineno : ''}`);
+    if (parts.length === 0) parts.push('Worker failed to load or crashed (check browser console)');
+    const msg = parts.join(' ');
+    console.error('MC worker error:', e, e.error);
+    mcRunningStore.set({ running: false, pct: 0, error: msg });
+    if (activeWorker === worker) activeWorker = null;
+  };
+
+  worker.onmessageerror = (e) => {
+    console.error('MC worker messageerror:', e);
+    mcRunningStore.set({ running: false, pct: 0, error: 'Worker message deserialization failed' });
     if (activeWorker === worker) activeWorker = null;
   };
 
