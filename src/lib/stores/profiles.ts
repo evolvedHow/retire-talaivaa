@@ -32,7 +32,7 @@ function seededProfiles(): Record<string, Profile> {
     name: 'Aggressive 24% fill',
     scenario: {
       ...base,
-      strategy: { mode: 'fill-bracket', targetMarginalRate: 0.24, startAge: base.retireAge, endAge: 72 },
+      strategy: { mode: 'fill-bracket', targetMarginalRate: 0.24, startAge: base.retireAge, endAge: 72, annualCap: 0 },
     },
     createdAt: now, updatedAt: now,
   };

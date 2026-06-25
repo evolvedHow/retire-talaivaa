@@ -47,10 +47,10 @@ export function resolveConversion(
     }
     case 'custom':
       return Math.min(strategy.perAge[age] ?? 0, taxDeferredAvailable);
-    case 'fill-bracket':
+    case 'fill-bracket': {
       if (strategy.startAge != null && age < strategy.startAge) return 0;
       if (strategy.endAge != null && age > strategy.endAge) return 0;
-      return fillBracket(
+      const filled = fillBracket(
         ordinaryIncomeBefore,
         taxableIncomeBefore,
         strategy.targetMarginalRate,
@@ -58,5 +58,10 @@ export function resolveConversion(
         fs,
         taxDeferredAvailable,
       );
+      const cap = (strategy.annualCap != null && strategy.annualCap > 0)
+        ? strategy.annualCap
+        : Infinity;
+      return Math.min(filled, cap);
+    }
   }
 }

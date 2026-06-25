@@ -9,6 +9,10 @@ export type ConversionStrategy =
       targetMarginalRate: number; // e.g. 0.12, 0.22, 0.24
       startAge: number;
       endAge: number;
+      // Dollar cap on the auto-fill amount per year. 0 = no cap
+      // (fill all the way to the bracket top). Otherwise the converted
+      // amount is min(bracketFill, annualCap).
+      annualCap: number;
     }
   | {
       mode: 'fixed-annual';
@@ -112,7 +116,7 @@ export function defaultScenario(): ScenarioInputs {
 
     withdrawalOrder: ['taxable', 'taxDeferred', 'taxFree'],
 
-    strategy: { mode: 'fill-bracket', targetMarginalRate: 0.24, startAge: 65, endAge: 72 },
+    strategy: { mode: 'fill-bracket', targetMarginalRate: 0.24, startAge: 65, endAge: 72, annualCap: 0 },
 
     planUntilAge: 95,
     taxLawMode: 'freeze-current',

@@ -29,7 +29,7 @@
     const mode = (e.target as HTMLSelectElement).value;
     scenarioStore.update(s => {
       if (mode === 'none') s.strategy = { mode: 'none' };
-      else if (mode === 'fill-bracket') s.strategy = { mode: 'fill-bracket', targetMarginalRate: 0.24, startAge: s.retireAge, endAge: 75 };
+      else if (mode === 'fill-bracket') s.strategy = { mode: 'fill-bracket', targetMarginalRate: 0.24, startAge: s.retireAge, endAge: 75, annualCap: 0 };
       else if (mode === 'fixed-annual') s.strategy = { mode: 'fixed-annual', amount: 50000, startAge: s.retireAge, endAge: 75, perAgeOverride: {} };
       else if (mode === 'custom') s.strategy = { mode: 'custom', perAge: {} };
       return s;
@@ -94,9 +94,17 @@
       </select>
     </div>
 
-    {#if $scenarioStore.strategy.mode === 'fill-bracket'}
+    {#if $scenarioStore.strategy.mode === 'fixed-annual'}
+      <div class="headline-lever">
+        <NumberInput label="Conversion $ per year" prefix="$" bind:value={$scenarioStore.strategy.amount} min={0} max={300000} step={2500} withSlider
+          help="Base amount converted each year in the window. Per-year overrides below take precedence." />
+      </div>
+      <NumberInput label="Window start age" bind:value={$scenarioStore.strategy.startAge} min={50} max={80} withSlider />
+      <NumberInput label="Window end age" bind:value={$scenarioStore.strategy.endAge} min={50} max={80} withSlider />
+      <PerYearConversionEditor />
+    {:else if $scenarioStore.strategy.mode === 'fill-bracket'}
       <div class="row">
-        <label for="target-rate">Top of bracket</label>
+        <label for="target-rate">Fill to top of bracket</label>
         <select id="target-rate" value={String($scenarioStore.strategy.targetMarginalRate)} on:change={onTargetRate}>
           <option value="0.10">10%</option>
           <option value="0.12">12%</option>
@@ -106,14 +114,12 @@
           <option value="0.35">35%</option>
         </select>
       </div>
+      <div class="headline-lever">
+        <NumberInput label="Cap conversion $ per year" prefix="$" bind:value={$scenarioStore.strategy.annualCap} min={0} max={300000} step={2500} withSlider
+          help="Limit on the auto-fill amount. 0 = no cap (fills to the bracket top). Drag to constrain — e.g. cap at $80k to see effect of converting less." />
+      </div>
       <NumberInput label="Window start age" bind:value={$scenarioStore.strategy.startAge} min={50} max={80} withSlider />
       <NumberInput label="Window end age" bind:value={$scenarioStore.strategy.endAge} min={50} max={80} withSlider />
-    {:else if $scenarioStore.strategy.mode === 'fixed-annual'}
-      <NumberInput label="Convert at least (per year)" prefix="$" bind:value={$scenarioStore.strategy.amount} min={0} max={300000} step={2500} withSlider
-        help="Base conversion amount applied each year in the window. Per-year overrides below take precedence." />
-      <NumberInput label="Window start age" bind:value={$scenarioStore.strategy.startAge} min={50} max={80} withSlider />
-      <NumberInput label="Window end age" bind:value={$scenarioStore.strategy.endAge} min={50} max={80} withSlider />
-      <PerYearConversionEditor />
     {/if}
   </section>
 
@@ -189,4 +195,12 @@
   }
   .checkbox-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
   .checkbox-row label { font-size: 13px; color: #444; cursor: pointer; }
+  /* Visually emphasized lever — the "how much to convert" slider */
+  .headline-lever {
+    background: #eff6ff;
+    border-left: 3px solid #2a4d8f;
+    padding: 8px 10px 2px;
+    border-radius: 3px;
+    margin: 4px 0 10px;
+  }
 </style>
