@@ -1,0 +1,482 @@
+meta:
+  tax_year: 2024
+  label: "2024 Federal + NY + GA Tax Rules"
+  description: "Federal income tax rules for 2024 plus New York and Georgia state rules"
+  last_updated: "2024-12-01"
+
+federal:
+  standard_deduction:
+    single: 14600
+    married_filing_jointly: 29200
+    head_of_household: 21900
+    married_filing_separately: 14600
+
+  senior_bonus:
+    single:
+      amount: 1950
+      phase_out_threshold: 9999999 # no federal phase-out; use large number
+      phase_out_rate: 0
+    married_filing_jointly:
+      amount: 1550
+      phase_out_threshold: 9999999
+      phase_out_rate: 0
+    head_of_household:
+      amount: 1950
+      phase_out_threshold: 9999999
+      phase_out_rate: 0
+    married_filing_separately:
+      amount: 1550
+      phase_out_threshold: 9999999
+      phase_out_rate: 0
+
+  brackets:
+    single:
+      - { floor: 0,       ceiling: 11600,  rate: 0.10 }
+      - { floor: 11600,   ceiling: 47150,  rate: 0.12 }
+      - { floor: 47150,   ceiling: 100525, rate: 0.22 }
+      - { floor: 100525,  ceiling: 191950, rate: 0.24 }
+      - { floor: 191950,  ceiling: 243725, rate: 0.32 }
+      - { floor: 243725,  ceiling: 609350, rate: 0.35 }
+      - { floor: 609350,  ceiling: null,   rate: 0.37 }
+    married_filing_jointly:
+      - { floor: 0,       ceiling: 23200,   rate: 0.10 }
+      - { floor: 23200,   ceiling: 94300,   rate: 0.12 }
+      - { floor: 94300,   ceiling: 201050,  rate: 0.22 }
+      - { floor: 201050,  ceiling: 383900,  rate: 0.24 }
+      - { floor: 383900,  ceiling: 487450,  rate: 0.32 }
+      - { floor: 487450,  ceiling: 731200,  rate: 0.35 }
+      - { floor: 731200,  ceiling: null,    rate: 0.37 }
+    head_of_household:
+      - { floor: 0,       ceiling: 16550,  rate: 0.10 }
+      - { floor: 16550,   ceiling: 63100,  rate: 0.12 }
+      - { floor: 63100,   ceiling: 100500, rate: 0.22 }
+      - { floor: 100500,  ceiling: 191950, rate: 0.24 }
+      - { floor: 191950,  ceiling: 243700, rate: 0.32 }
+      - { floor: 243700,  ceiling: 609350, rate: 0.35 }
+      - { floor: 609350,  ceiling: null,   rate: 0.37 }
+    married_filing_separately:
+      - { floor: 0,       ceiling: 11600,  rate: 0.10 }
+      - { floor: 11600,   ceiling: 47150,  rate: 0.12 }
+      - { floor: 47150,   ceiling: 100525, rate: 0.22 }
+      - { floor: 100525,  ceiling: 191950, rate: 0.24 }
+      - { floor: 191950,  ceiling: 243725, rate: 0.32 }
+      - { floor: 243725,  ceiling: 365600, rate: 0.35 }
+      - { floor: 365600,  ceiling: null,   rate: 0.37 }
+
+  itemized_deductions:
+    salt:
+      cap:
+        single: 10000
+        married_filing_jointly: 10000
+        head_of_household: 10000
+        married_filing_separately: 5000
+      phase_out:
+        single:
+          threshold: 9999999 # TCJA — no AGI phase-out on SALT cap itself
+          rate: 0
+        married_filing_jointly:
+          threshold: 9999999
+          rate: 0
+        head_of_household:
+          threshold: 9999999
+          rate: 0
+        married_filing_separately:
+          threshold: 9999999
+          rate: 0
+    mortgage_interest:
+      cap: 750000 # interest deductible on up to $750k of acquisition debt
+    charity:
+      cap_pct_agi: 0.60 # 60% of AGI for cash donations
+
+  ira:
+    limit: 7000
+    limit_50_plus: 8000
+    phase_out:
+      single:
+        floor: 77000
+        ceiling: 87000
+      married_filing_jointly:
+        floor: 123000
+        ceiling: 143000
+      head_of_household:
+        floor: 77000
+        ceiling: 87000
+      married_filing_separately:
+        floor: 0
+        ceiling: 10000
+
+  capital_gains:
+    single:
+      - { floor: 0,      ceiling: 47025,  rate: 0.00 }
+      - { floor: 47025,  ceiling: 518900, rate: 0.15 }
+      - { floor: 518900, ceiling: null,   rate: 0.20 }
+    married_filing_jointly:
+      - { floor: 0,      ceiling: 94050,  rate: 0.00 }
+      - { floor: 94050,  ceiling: 583750, rate: 0.15 }
+      - { floor: 583750, ceiling: null,   rate: 0.20 }
+    head_of_household:
+      - { floor: 0,      ceiling: 63000,  rate: 0.00 }
+      - { floor: 63000,  ceiling: 551350, rate: 0.15 }
+      - { floor: 551350, ceiling: null,   rate: 0.20 }
+    married_filing_separately:
+      - { floor: 0,      ceiling: 47025,  rate: 0.00 }
+      - { floor: 47025,  ceiling: 291850, rate: 0.15 }
+      - { floor: 291850, ceiling: null,   rate: 0.20 }
+
+  credits:
+    child_tax_credit:
+      amount_per_child: 2000
+      phase_out:
+        single:
+          threshold: 200000
+          rate_per_1000: 50
+        married_filing_jointly:
+          threshold: 400000
+          rate_per_1000: 50
+        head_of_household:
+          threshold: 200000
+          rate_per_1000: 50
+        married_filing_separately:
+          threshold: 200000
+          rate_per_1000: 50
+
+  surtaxes:
+    niit:
+      rate: 0.038
+      threshold:
+        single: 200000
+        married_filing_jointly: 250000
+        head_of_household: 200000
+        married_filing_separately: 125000
+      base: lesser_of_net_investment_income_or_magi_excess
+
+  warnings:
+    amt:
+      trigger_if_any_present:
+        - iso_options_exercised
+        - has_amt_preference_items
+
+levers:
+  - id: filing_status
+    label: Filing Status
+    type: dropdown
+    default: single
+    options:
+      - single
+      - married_filing_jointly
+      - head_of_household
+      - married_filing_separately
+    help: >
+      Determines your tax brackets, standard deduction, and credit phase-out
+      thresholds. Married Filing Jointly generally yields the most favorable
+      rates. Head of Household requires being unmarried with a qualifying
+      dependent living with you more than half the year.
+
+  - id: wages_income
+    label: W-2 Wages
+    type: slider
+    min: 0
+    max: 1000000
+    step: 5000
+    default: 150000
+    help: >
+      W-2 wages from employment. Taxed at graduated federal brackets (10%–37%).
+      Starting point for IRA deduction phase-out calculations.
+
+  - id: bonus
+    label: Bonus / Other Ordinary Income
+    type: slider
+    min: 0
+    max: 500000
+    step: 5000
+    default: 0
+    help: >
+      Cash bonuses, commissions, or other W-2 ordinary income. Taxed at your
+      marginal bracket rate.
+
+  - id: investment_income
+    label: Interest / Non-Qualified Dividends
+    type: slider
+    min: 0
+    max: 200000
+    step: 1000
+    default: 0
+    help: >
+      Bank interest, bond interest, and non-qualified dividends. Taxed at
+      regular income bracket rates. Counts toward the NIIT base.
+
+  - id: short_term_capital_gains
+    label: Short-Term Capital Gains
+    type: slider
+    min: 0
+    max: 500000
+    step: 5000
+    default: 0
+    help: >
+      Gains from assets held 1 year or less. Taxed as ordinary income at your
+      marginal bracket rate.
+
+  - id: business_income
+    label: Business / Self-Employment Income
+    type: slider
+    min: 0
+    max: 1000000
+    step: 5000
+    default: 0
+    help: >
+      Net Schedule C profit after business expenses. Taxed at regular income
+      brackets. SE tax (~15.3%) is not separately modeled.
+
+  - id: capital_gains
+    label: Long-Term Capital Gains
+    type: slider
+    min: 0
+    max: 500000
+    step: 5000
+    default: 0
+    help: >
+      Gains from assets held more than 1 year. Taxed at preferential federal
+      rates: 0%, 15%, or 20% depending on total income.
+
+  - id: qualified_dividends
+    label: Qualified Dividends
+    type: slider
+    min: 0
+    max: 500000
+    step: 1000
+    default: 0
+    help: >
+      Dividends from domestic and qualifying foreign corporations. Taxed at the
+      same preferential 0/15/20% rates as long-term capital gains.
+
+  - id: rental_income
+    label: Rental / Passive Income
+    type: slider
+    min: 0
+    max: 500000
+    step: 5000
+    default: 0
+    help: >
+      Net rental income after expenses. Treated as ordinary income (passive
+      activity loss rules not modeled). Counts toward the NIIT base.
+
+  - id: ira_contribution
+    label: IRA Contribution
+    type: slider
+    min: 0
+    max: 8000
+    step: 500
+    default: 0
+    help: >
+      Traditional IRA contributions reduce taxable income dollar-for-dollar
+      (subject to phase-out if covered by a workplace plan). 2024 limit:
+      $7,000 ($8,000 if age 50+). Roth IRA contributions are not deductible
+      here — model them as post-tax savings instead.
+
+  - id: has_workplace_plan
+    label: Covered by Workplace Retirement Plan
+    type: toggle
+    default: false
+    help: >
+      If you (or your spouse for MFJ) participate in a 401(k), 403(b), SEP,
+      or SIMPLE plan, your Traditional IRA deduction phases out at lower MAGI
+      levels. Without any workplace plan coverage, the full IRA contribution
+      is always deductible regardless of income.
+
+  - id: age
+    label: Age
+    type: integer
+    min: 18
+    max: 90
+    step: 1
+    default: 40
+    help: >
+      Used to calculate IRA catch-up contribution eligibility ($1,000 extra
+      allowed at age 50+). If 65 or older, the senior standard deduction bonus
+      is applied automatically.
+
+  - id: num_children
+    label: Qualifying Children (Child Tax Credit)
+    type: integer
+    min: 0
+    max: 10
+    step: 1
+    default: 0
+    help: >
+      Each qualifying child under age 17 earns a $2,000 Child Tax Credit
+      ($1,700 refundable for 2024). Phases out by $50 per $1,000 of income
+      above $200K (single) or $400K (MFJ). The child must live with you more
+      than half the year and you must claim them as a dependent.
+
+  - id: state_local_tax
+    label: State & Local Taxes Paid (SALT)
+    type: slider
+    min: 0
+    max: 50000
+    step: 500
+    default: 8000
+    help: >
+      State income taxes or property taxes you paid during the year. Deductible
+      only when itemizing, and capped at $10,000 ($5,000 if MFS) under the
+      TCJA SALT cap, which is currently in effect through 2025. High-tax-state
+      residents often hit this cap quickly.
+
+  - id: mortgage_interest
+    label: Mortgage Interest Paid
+    type: slider
+    min: 0
+    max: 100000
+    step: 500
+    default: 0
+    help: >
+      Interest on mortgage acquisition debt up to $750,000 (loans originated
+      after Dec 15, 2017) or $1M (pre-2018 loans). Deductible only when
+      itemizing. Home equity loan interest is not deductible unless used to
+      buy, build, or substantially improve the home.
+
+  - id: charitable_contributions
+    label: Charitable Contributions
+    type: slider
+    min: 0
+    max: 500000
+    step: 1000
+    default: 0
+    help: >
+      Cash donations to qualified 501(c)(3) organizations. Deductible only
+      when itemizing, capped at 60% of AGI for cash donations. Tip: donating
+      long-term appreciated stock lets you deduct the full fair market value
+      while avoiding capital gains tax on the appreciation — up to 30% of AGI.
+
+  - id: state
+    label: State
+    type: dropdown
+    default: none
+    options:
+      - none
+      - NY
+      - GA
+      - IL
+    help: >
+      Adds state income tax to your total liability. New York uses progressive
+      brackets (4%–8.82%); Georgia uses a flat 5.49% rate for 2024; Illinois
+      uses a flat 4.95% rate. Select "none" for states with no income tax (FL,
+      TX, WA, etc.). NYC residents should also enable the NYC toggle below for
+      the city surcharge.
+
+  - id: iso_options_exercised
+    label: Exercised ISO Stock Options (AMT trigger)
+    type: toggle
+    default: false
+    help: >
+      Exercising Incentive Stock Options (ISOs) creates an AMT preference item
+      equal to the spread between the exercise price and the stock's fair
+      market value at exercise. This can trigger significant Alternative
+      Minimum Tax even if you didn't sell the shares. Consult a tax advisor
+      before exercising a large ISO grant.
+
+  - id: has_amt_preference_items
+    label: Has AMT Preference Items
+    type: toggle
+    default: false
+    help: >
+      Certain deductions and income items are "added back" under AMT rules:
+      accelerated depreciation, percentage depletion, passive activity losses,
+      and some tax-exempt bond interest. If any of these apply, a full AMT
+      calculation (Form 6251) is required. The AMT exemption for 2024 is
+      $85,700 (single) / $133,300 (MFJ).
+
+  - id: federal_withheld
+    label: Federal Tax Already Withheld (W-2 Box 2)
+    type: slider
+    min: 0
+    max: 200000
+    step: 500
+    default: 0
+    help: >
+      The total federal income tax withheld from your paychecks, shown in Box 2
+      of your W-2. If you have multiple W-2s or estimated tax payments (Form
+      1040-ES), add them all together. The app will show your refund or amount
+      owed based on this vs. your computed liability. Withholding does not
+      reduce your actual tax bill — it just changes whether you owe or get a
+      refund at filing.
+
+  - id: state_withheld
+    label: State Tax Already Withheld (W-2 Box 17)
+    type: slider
+    min: 0
+    max: 100000
+    step: 250
+    default: 0
+    help: >
+      State income tax withheld from your paychecks, shown in Box 17 of your
+      W-2. Add all W-2s and any estimated state tax payments made during the
+      year. NYC residents: include both NY state (Box 17) and NYC (Box 19)
+      withholding combined in this field, or separately track them. Compares
+      against computed state + local tax liability.
+
+states:
+  NY:
+    note: "New York State 2024 tax brackets — source: NY Tax Law §601"
+    brackets:
+      single:
+        - { floor: 0,       ceiling: 17150,  rate: 0.04   }
+        - { floor: 17150,   ceiling: 23600,  rate: 0.045  }
+        - { floor: 23600,   ceiling: 27900,  rate: 0.0525 }
+        - { floor: 27900,   ceiling: 161550, rate: 0.0585 }
+        - { floor: 161550,  ceiling: 323200, rate: 0.0625 }
+        - { floor: 323200,  ceiling: 2155350,rate: 0.0685 }
+        - { floor: 2155350, ceiling: null,   rate: 0.0882 }
+      married_filing_jointly:
+        - { floor: 0,       ceiling: 27900,  rate: 0.04   }
+        - { floor: 27900,   ceiling: 43000,  rate: 0.045  }
+        - { floor: 43000,   ceiling: 161550, rate: 0.0525 }
+        - { floor: 161550,  ceiling: 323200, rate: 0.0585 }
+        - { floor: 323200,  ceiling: 2155350,rate: 0.0625 }
+        - { floor: 2155350, ceiling: null,   rate: 0.0882 }
+      head_of_household:
+        - { floor: 0,       ceiling: 27900,  rate: 0.04   }
+        - { floor: 27900,   ceiling: 43000,  rate: 0.045  }
+        - { floor: 43000,   ceiling: 161550, rate: 0.0525 }
+        - { floor: 161550,  ceiling: 323200, rate: 0.0585 }
+        - { floor: 323200,  ceiling: 2155350,rate: 0.0625 }
+        - { floor: 2155350, ceiling: null,   rate: 0.0882 }
+      married_filing_separately:
+        - { floor: 0,       ceiling: 17150,  rate: 0.04   }
+        - { floor: 17150,   ceiling: 23600,  rate: 0.045  }
+        - { floor: 23600,   ceiling: 27900,  rate: 0.0525 }
+        - { floor: 27900,   ceiling: 161550, rate: 0.0585 }
+        - { floor: 161550,  ceiling: 323200, rate: 0.0625 }
+        - { floor: 323200,  ceiling: 1077675,rate: 0.0685 }
+        - { floor: 1077675, ceiling: null,   rate: 0.0882 }
+    sub_jurisdictions:
+      NYC:
+        trigger_lever: nyc_resident
+        brackets:
+          single:
+            - { floor: 0,      ceiling: 12000, rate: 0.03078 }
+            - { floor: 12000,  ceiling: 25000, rate: 0.03762 }
+            - { floor: 25000,  ceiling: 50000, rate: 0.03819 }
+            - { floor: 50000,  ceiling: null,  rate: 0.03876 }
+          married_filing_jointly:
+            - { floor: 0,      ceiling: 21600, rate: 0.03078 }
+            - { floor: 21600,  ceiling: 45000, rate: 0.03762 }
+            - { floor: 45000,  ceiling: 90000, rate: 0.03819 }
+            - { floor: 90000,  ceiling: null,  rate: 0.03876 }
+          head_of_household:
+            - { floor: 0,      ceiling: 14400, rate: 0.03078 }
+            - { floor: 14400,  ceiling: 30000, rate: 0.03762 }
+            - { floor: 30000,  ceiling: 60000, rate: 0.03819 }
+            - { floor: 60000,  ceiling: null,  rate: 0.03876 }
+          married_filing_separately:
+            - { floor: 0,      ceiling: 12000, rate: 0.03078 }
+            - { floor: 12000,  ceiling: 25000, rate: 0.03762 }
+            - { floor: 25000,  ceiling: 50000, rate: 0.03819 }
+            - { floor: 50000,  ceiling: null,  rate: 0.03876 }
+
+  GA:
+    note: "Georgia 2024 flat income tax rate — source: GA Dept of Revenue" # approximation — last verified 2024-11
+    flat_rate: 0.0549
+
+  IL:
+    note: "Illinois 2024 flat income tax rate — source: IL Income Tax Act (35 ILCS 5/201)"
+    flat_rate: 0.0495
