@@ -8,6 +8,7 @@
   import ProfileBar from './lib/components/inputs/ProfileBar.svelte';
   import MCControls from './lib/components/inputs/MCControls.svelte';
   import ComparisonHeader from './lib/components/viz/ComparisonHeader.svelte';
+  import SweepChart from './lib/components/viz/SweepChart.svelte';
   import StrategyComparisonChart from './lib/components/viz/StrategyComparisonChart.svelte';
   import ConversionWindowChart from './lib/components/viz/ConversionWindowChart.svelte';
   import YearTable from './lib/components/viz/YearTable.svelte';
@@ -51,6 +52,7 @@
       <div class="right">
         {#if view === 'advisor'}
           <ComparisonHeader />
+          <SweepChart />
           <StrategyComparisonChart />
           <ConversionWindowChart />
           <YearTable />
