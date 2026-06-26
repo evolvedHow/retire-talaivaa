@@ -45,8 +45,9 @@
   {:else}
     <div class="body">
       <div class="left">
-        <InputsPanel />
-        {#if view === 'stress'}
+        {#if view === 'advisor'}
+          <InputsPanel />
+        {:else}
           <MCControls />
         {/if}
       </div>

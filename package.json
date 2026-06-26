@@ -1,5 +1,5 @@
 {
-  "name": "retire-talaivaa",
+  "name": "roth-talaivaa",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "smoke": "npx tsx smoke-test.mjs",
-    "deploy": "VITE_BASE=/retire-talaivaa/ npm run build && gh-pages -d dist"
+    "deploy": "VITE_BASE=/roth-talaivaa/ npm run build && gh-pages -d dist"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
