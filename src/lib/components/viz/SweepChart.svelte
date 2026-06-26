@@ -30,6 +30,13 @@
     });
   }
 
+  // Edge-case detection: did the optimum land at the very end of the sweep?
+  // If yes, the true peak might lie further out — useful to surface.
+  $: optAtMaxEdge = result != null
+    && result.optimumByNW.amount === result.points[result.points.length - 1].amount;
+  $: optAtMinEdge = result != null
+    && result.optimumByNW.amount === result.points[0].amount;
+
   function draw() {
     if (!svg || !result) return;
     const pts = result.points;
@@ -134,9 +141,12 @@
       ].join('\n'));
 
     // Axis labels
+    const xLabel = result.mode === 'fill-bracket'
+      ? 'Annual conversion cap ($/yr) — left = conservative, right = aggressive'
+      : 'Conversion amount ($/yr) — left = nothing, right = aggressive';
     g.append('text').attr('x', innerW / 2).attr('y', innerH + 32)
       .attr('text-anchor', 'middle').attr('font-size', 11).attr('fill', '#666')
-      .text(result.mode === 'fill-bracket' ? 'Cap conversion at ($/yr)' : 'Conversion amount ($/yr)');
+      .text(xLabel);
     g.append('text')
       .attr('transform', `translate(-55,${innerH / 2}) rotate(-90)`)
       .attr('text-anchor', 'middle').attr('font-size', 10).attr('fill', '#2a4d8f')
@@ -166,7 +176,7 @@
     <header>
       <h3>Sweet spot — how the strategy lands across conversion amounts</h3>
       <button class="apply" on:click={applyOptimum} title="Set the slider to the NW-optimal amount">
-        ★ Use optimum ({(result.optimumByNW.amount/1000).toFixed(0)}k/yr)
+        ★ Use optimum (${(result.optimumByNW.amount/1000).toFixed(0)}k/yr {result.mode === 'fill-bracket' ? 'cap' : ''})
       </button>
     </header>
     <svg bind:this={svg}></svg>
@@ -174,16 +184,33 @@
       <span class="lg"><span class="line solid"></span>Terminal real NW (higher = better)</span>
       <span class="lg"><span class="line dashed"></span>Lifetime tax NPV (lower = better)</span>
       <span class="lg"><span class="sw" style="background:#86efac;opacity:0.5"></span>Within {(result.bandPct*100).toFixed(1)}% of NW optimum</span>
-      <span class="lg"><span class="star">★</span>NW optimum: {(result.optimumByNW.amount/1000).toFixed(0)}k → {(result.optimumByNW.terminalNWReal/1_000_000).toFixed(2)}M NW</span>
-      <span class="lg"><span class="dot tax"></span>Tax-min optimum: {(result.optimumByTax.amount/1000).toFixed(0)}k → {(result.optimumByTax.lifetimeTaxNPV/1000).toFixed(0)}k tax</span>
+      <span class="lg"><span class="star">★</span>NW optimum: ${(result.optimumByNW.amount/1000).toFixed(0)}k → {(result.optimumByNW.terminalNWReal/1_000_000).toFixed(2)}M NW</span>
+      <span class="lg"><span class="dot tax"></span>Tax-min optimum: ${(result.optimumByTax.amount/1000).toFixed(0)}k → ${(result.optimumByTax.lifetimeTaxNPV/1000).toFixed(0)}k tax</span>
     </div>
-    <p class="hint">
-      The shaded green band is the range where you're within {(result.bandPct*100).toFixed(1)}% of the best terminal net worth — anywhere inside it is essentially as good. Use this to see how flat or steep the optimum is for your scenario. Click ★ to snap the slider to the NW optimum.
-    </p>
+
+    {#if result.mode === 'fill-bracket'}
+      <p class="hint">
+        <strong>Reading this:</strong> The X axis is your <em>annual conversion cap</em>. Low cap = you convert little each year (conservative). High cap = you let the strategy fill to the top of your {((($scenarioStore.strategy.mode === 'fill-bracket' ? $scenarioStore.strategy.targetMarginalRate : 0.24) * 100).toFixed(0))}% bracket. The green band marks the range within {(result.bandPct*100).toFixed(1)}% of the best terminal net worth — anywhere inside is essentially as good. Click ★ to snap your cap slider to the optimum. (Setting cap=$0 in the inputs means "no cap" — the most aggressive option, intentionally excluded from this sweep so the optimum points at a meaningful dollar value.)
+      </p>
+      {#if optAtMaxEdge}
+        <p class="hint warn">⚠ The optimum is at the maximum sweep value, which means "no cap" (most aggressive) is likely even better. Try setting cap=$0 in the inputs to compare.</p>
+      {/if}
+    {:else}
+      <p class="hint">
+        <strong>Reading this:</strong> The X axis is the dollar amount converted each year. Left = converting little or nothing. Right = converting aggressively. The green band marks the range within {(result.bandPct*100).toFixed(1)}% of the best terminal net worth — anywhere inside is essentially as good. Click ★ to snap the slider to the optimum.
+      </p>
+      {#if optAtMinEdge && result.optimumByNW.amount === 0}
+        <p class="hint warn">⚠ The optimum is "don't convert" for this scenario. Roth conversions probably aren't worth it given your inputs — likely because you have low tax-deferred balances, low expected returns, or already-low future RMD risk.</p>
+      {/if}
+    {/if}
   </div>
-{:else if $scenarioStore.strategy.mode === 'none' || $scenarioStore.strategy.mode === 'custom'}
+{:else if $scenarioStore.strategy.mode === 'none'}
   <div class="chart placeholder">
-    <p>Sweep is available for <strong>Fixed amount</strong> and <strong>Fill to bracket top</strong> strategies. Switch modes to see the sweet-spot landscape.</p>
+    <p>Sweep is available for <strong>Fixed amount</strong> and <strong>Fill to bracket top</strong> strategies. Switch modes (sidebar → Conversion strategy) to see the sweet-spot landscape.</p>
+  </div>
+{:else if $scenarioStore.strategy.mode === 'custom'}
+  <div class="chart placeholder">
+    <p>Sweep doesn't apply to <strong>Custom per-age</strong> mode — there's no single lever to sweep.</p>
   </div>
 {/if}
 
@@ -213,7 +240,9 @@
   .star { color: #16a34a; font-size: 13px; }
   .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
   .dot.tax { background: #d97706; }
-  .hint { font-size: 11px; color: #6b7280; margin-top: 8px; font-style: italic; line-height: 1.4; }
+  .hint { font-size: 11px; color: #6b7280; margin-top: 8px; line-height: 1.4; }
+  .hint strong { color: #1e3a8a; }
+  .hint.warn { color: #92400e; background: #fef3c7; padding: 6px 8px; border-radius: 3px; font-size: 11.5px; }
   .placeholder { text-align: center; color: #6b7280; padding: 20px; font-size: 13px; }
   .placeholder strong { color: #2a4d8f; }
 </style>

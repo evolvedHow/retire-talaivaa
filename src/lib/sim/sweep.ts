@@ -56,8 +56,14 @@ export function sweepConversion(
   const mode = scenario.strategy.mode;
   if (mode === 'none' || mode === 'custom') return null;
 
-  const min = opts.min ?? 0;
-  const max = opts.max ?? 300_000;
+  // For fill-bracket: annualCap=0 is a special "no cap" sentinel (= max
+  // conversion, fill to bracket top). It's NOT the same as "cap at $0",
+  // and including it in the sweep makes the optimum show up as "0k/yr"
+  // even though it really means "go aggressive". Skip it; sweep meaningful
+  // cap values instead. The user can still set cap=0 manually in the inputs.
+  const isFillBracket = mode === 'fill-bracket';
+  const min = opts.min ?? (isFillBracket ? 10_000 : 0);
+  const max = opts.max ?? (isFillBracket ? 500_000 : 300_000);
   const steps = opts.steps ?? 31;
   const bandPct = opts.bandPct ?? 0.01;
   const stepSize = (max - min) / Math.max(1, steps - 1);
