@@ -7,6 +7,7 @@
   import InputsPanel from './lib/components/inputs/InputsPanel.svelte';
   import ProfileBar from './lib/components/inputs/ProfileBar.svelte';
   import MCControls from './lib/components/inputs/MCControls.svelte';
+  import HowToRead from './lib/components/viz/HowToRead.svelte';
   import ComparisonHeader from './lib/components/viz/ComparisonHeader.svelte';
   import SweepChart from './lib/components/viz/SweepChart.svelte';
   import StrategyComparisonChart from './lib/components/viz/StrategyComparisonChart.svelte';
@@ -24,7 +25,7 @@
 <div class="app">
   <header>
     <div class="title">
-      <h1>Roth Conversion Advisor</h1>
+      <h1>Roth-Talaivaa</h1>
       <p>Visualize multi-year Roth conversions · avoid RMD spikes &amp; IRMAA tiers · minimize lifetime tax</p>
     </div>
     <ProfileBar />
@@ -51,6 +52,7 @@
       </div>
       <div class="right">
         {#if view === 'advisor'}
+          <HowToRead />
           <ComparisonHeader />
           <SweepChart />
           <StrategyComparisonChart />

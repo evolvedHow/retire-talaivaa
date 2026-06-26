@@ -167,8 +167,9 @@
     padding: 14px;
     border-radius: 6px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    overflow-y: auto;
-    height: 100%;
+    /* Don't pin to 100% height — let the panel size to its content so that
+       siblings in the left column (e.g. MCControls on Stress test) remain
+       reachable via the outer column's scroll. */
   }
   header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
   h2 { font-size: 16px; font-weight: 700; }
